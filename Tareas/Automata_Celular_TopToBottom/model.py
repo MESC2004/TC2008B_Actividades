@@ -44,15 +44,15 @@ class GameOfLife(Model):
 
         # Spawns cells randomly based on the density on the top row
         for contents, (x, y) in self.grid.coord_iter():
-            new_tree = EntityCell((x, y), self)
+            new_cell = EntityCell((x, y), self)
             if y == 49 and self.random.random() < density:
                 # Create a tree
-                new_tree.condition = 1
+                new_cell.condition = 1
             else:
-                new_tree.condition = 0
+                new_cell.condition = 0
 
-            self.grid.place_agent(new_tree, (x, y))
-            self.schedule.add(new_tree)
+            self.grid.place_agent(new_cell, (x, y))
+            self.schedule.add(new_cell)
 
             if y == 0:
                 self.running = False
@@ -78,7 +78,7 @@ class GameOfLife(Model):
     @staticmethod
     def count_type(model, tree_condition):
         """
-        Helper method to count trees in a given condition in a given model.
+        Helper method to count agents in a given condition in a given model.
         """
         count = 0
         for tree in model.schedule.agents:

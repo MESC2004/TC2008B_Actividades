@@ -22,13 +22,6 @@ class EntityCell(Agent):
         self._next_condition = None
 
     def step(self):
-        # BUG WENT AWAY WITH LIST AND MAP USE, UNUSED CODE
-        # def in_bounds(pos):
-        #     px, py = pos
-        #     return 0 <= px < 49 and 0 <= py < 49
-        #
-        # x, y = self.pos
-
         neighbor_list = []  # stores all neighbors around the cell
         top_neighbors = ["", "", ""]  # stores the 3 neighbors over the cell
 
@@ -47,29 +40,14 @@ class EntityCell(Agent):
             neighbor_list.append(str(neighbor.condition))
         print(neighbor_list)
 
-        # Assuming grid goes 1,2,3,4,5,6 from left top to right
+        # Assuming grid
+        # 2 4 7
+        # 1 X 6
+        # 0 3 5
         top_neighbors = [neighbor_list[2], neighbor_list[4], neighbor_list[7]]
 
         combined_states = "".join(top_neighbors)  # combined state string for top cells
         self._next_condition = state_result[combined_states]
-
-        # DIDNT WORK, DO NOT USE
-        # if (
-        #     (left_condition is None and mid_condition == 1)
-        #     or (
-        #         left_condition == 1
-        #         and mid_condition is None
-        #         and right_condition is None
-        #     )
-        #     or (
-        #         left_condition is None
-        #         and mid_condition == 1
-        #         and right_condition is None
-        #     )
-        # ):
-        #     self._next_condition = 1
-        # else:
-        #     self._next_condition = 0
 
     def advance(self):
         """

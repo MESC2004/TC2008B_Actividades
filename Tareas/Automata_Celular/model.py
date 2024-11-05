@@ -8,7 +8,7 @@ from agent import EntityCell
 
 class GameOfLife(Model):
     """
-    Simple Forest Fire model.
+    Simple game of life model (full random start).
 
     Attributes:
         height, width: Grid size.
@@ -17,7 +17,7 @@ class GameOfLife(Model):
 
     def __init__(self, height=50, width=50, density=0.65):
         """
-        Create a new forest fire model.
+        Create a new game of life model.
 
         Args:
             height, width: The size of the grid to model
@@ -46,15 +46,15 @@ class GameOfLife(Model):
         for contents, (x, y) in self.grid.coord_iter():
             if self.random.random() < density:
                 # Create a tree
-                new_tree = EntityCell((x, y), self)
-                new_tree.condition = 1
+                new_cell = EntityCell((x, y), self)
+                new_cell.condition = 1
 
             else:
-                new_tree = EntityCell((x, y), self)
-                new_tree.condition = 0
+                new_cell = EntityCell((x, y), self)
+                new_cell.condition = 0
 
-            self.grid.place_agent(new_tree, (x, y))
-            self.schedule.add(new_tree)
+            self.grid.place_agent(new_cell, (x, y))
+            self.schedule.add(new_cell)
 
         self.running = True
         self.datacollector.collect(self)
@@ -66,10 +66,6 @@ class GameOfLife(Model):
         self.schedule.step()
         # collect data
         self.datacollector.collect(self)
-
-        # # Halt if no more fire
-        # if self.count_type(self, 1) == 0:
-        #     self.running = False
 
     # staticmethod is a Python decorator that makes a method callable without an instance.
     @staticmethod

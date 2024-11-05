@@ -12,7 +12,7 @@ LABELMAP = {1: "Alive", 0: "Dead"}
 
 # The portrayal is a dictionary that is used by the visualization server to
 # generate a visualization of the given agent.
-def forest_fire_portrayal(tree):
+def GoL_portrayal(tree):
     if tree is None:
         return
     portrayal = {"Shape": "rect", "w": 1, "h": 1, "Filled": "true", "Layer": 0}
@@ -27,17 +27,13 @@ def forest_fire_portrayal(tree):
 # The canvas element will be 500x500 pixels, with each cell being 5x5 pixels.
 # The portrayal method will fill each cell with a representation of the tree
 # that is in that cell.
-canvas_element = CanvasGrid(forest_fire_portrayal, 50, 50, 500, 500)
+canvas_element = CanvasGrid(GoL_portrayal, 50, 50, 500, 500)
 
 # The chart will plot the number of each type of tree over time.
-tree_chart = ChartModule(
+entity_chart = ChartModule(
     [{"Label": label, "Color": color} for label, color in COLORS.items()]
 )
 
-# The pie chart will plot the number of each type of tree at the current step.
-pie_chart = PieChartModule(
-    [{"Label": label, "Color": color} for label, color in COLORS.items()]
-)
 
 # The model parameters will be set by sliders controlling the initial density
 model_params = {
@@ -50,7 +46,7 @@ model_params = {
 # elements to be displayed simultaneously, and for each of them to be updated
 # when the user interacts with them.
 server = ModularServer(
-    GameOfLife, [canvas_element, tree_chart], "Game Of Life", model_params
+    GameOfLife, [canvas_element, entity_chart], "Game Of Life", model_params
 )
 
 server.launch()
