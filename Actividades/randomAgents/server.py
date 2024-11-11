@@ -20,9 +20,12 @@ def agent_portrayal(agent):
 
 
     if (isinstance(agent, ObstacleAgent)):
+        portrayal["Shape"] = "rect"
         portrayal["Color"] = "grey"
         portrayal["Layer"] = 1
-        portrayal["r"] = 0.2
+        portrayal["Filled"] = "true"
+        portrayal["w"] = 1
+        portrayal["h"] = 1
 
     if (isinstance(agent, TrashAgent)):
         portrayal["Color"] = "blue"

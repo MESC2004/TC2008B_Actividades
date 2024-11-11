@@ -54,7 +54,8 @@ class RandomAgent(Agent):
     
     def move(self):
         """ 
-        Determines the next move for the agent. If there is trash in the neighborhood, it moves to the trash. 
+        Determines the next move for the agent. If there is trash in the neighborhood, it moves to the trash,
+        if not, it moves randomly. 
         Also checks for collisions with other agents and obstacles.
         """
         possible_steps = self.model.grid.get_neighborhood(
@@ -86,14 +87,14 @@ class RandomAgent(Agent):
     
     def step(self):
         """ 
-        Verifica si hay basura en la posición actual; si es así, la limpia, si no, se mueve.
+        Checks if the agent has trash in the cell it is in, if it does, it removes the trash, if not, it moves to the next cell.
+        Should detect charging stations (TODO)
         """
-        # Verificar si hay basura en la posición actual
         cell_contents = self.model.grid.get_cell_list_contents([self.pos])
         trash = [obj for obj in cell_contents if isinstance(obj, TrashAgent)]
 
         if trash:
-            # Limpiar la basura
+            # remove the trash from the grid
             self.model.grid.remove_agent(trash[0])
             self.model.schedule.remove(trash[0])
             self.steps_taken += 1
