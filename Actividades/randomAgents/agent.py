@@ -1,4 +1,3 @@
-
 from mesa import Agent
 import heapq
 
@@ -161,16 +160,18 @@ class RandomAgent(Agent):
             # Agent has no energy; stop acting
             return
 
-        # If the agent's home position is not set, set it now
+        # If the agent's home position is not set, set it now (first step just in case)
         if self.home is None:
             self.home = self.pos
 
         # Check if the agent needs to return home
         distance_to_home = self.heuristic(self.pos, self.home)
-        buffer = 5  # Extra energy units as buffer
+        buffer = 5  # Extra energy units as buffer for wiggle room
+        # if im not returning home and my energy is less than the distance to home + buffer
         if not self.returning_home and self.energy <= distance_to_home + buffer:
             # Start returning home
             self.returning_home = True
+            # calculate poath with current knowledge
             self.path_home = self.a_star_search(self.pos, self.home)
             if self.path_home is None:
                 # No path found, cannot return home
@@ -184,7 +185,7 @@ class RandomAgent(Agent):
                 if self.energy < 100:
                     self.energy = min(self.energy + 5, 100)  # Recharge 5% per step
                 else:
-                    # Fully charged, resume normal behavior
+                    # Fully charged, go wander
                     self.returning_home = False
                     self.path_home = []
                 return  # Stay on the charging station
