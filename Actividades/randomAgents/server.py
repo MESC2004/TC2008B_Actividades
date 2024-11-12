@@ -19,6 +19,8 @@ def agent_portrayal(agent):
         portrayal["Color"] = colors[agent.unique_id % 5]
         portrayal["Layer"] = 3
         portrayal["r"] = 0.5
+        portrayal["text"] = f"{agent.energy}%"
+        portrayal["text_color"] = "black"
 
 
     if (isinstance(agent, ObstacleAgent)):
@@ -43,12 +45,12 @@ def agent_portrayal(agent):
 
 model_params = {
         "N": mesa.visualization.Slider("Roombas", 5, 1, 15),
-        "M": mesa.visualization.Slider("Trash", 15, 1, 40),
-        "O": mesa.visualization.Slider("Obstacles", 10, 1, 25),
-        "width": 12,
-        "height": 12
+        "M": mesa.visualization.Slider("Trash", value=0.1, min_value=0, max_value=1, step=0.05),
+        "O": mesa.visualization.Slider("Obstacles", value=0.1, min_value=0, max_value=1, step=0.05),
+        "width": 20,
+        "height": 20
 }
-grid = CanvasGrid(agent_portrayal, 12, 12, 500, 500)
+grid = CanvasGrid(agent_portrayal, 20, 20, 500, 500)
 
 bar_chart = BarChartModule(
     [{"Label":"Steps", "Color":"#AA0000"}], 

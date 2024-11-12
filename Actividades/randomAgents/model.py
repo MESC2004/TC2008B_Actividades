@@ -24,22 +24,21 @@ class RandomModel(Model):
         
         self.running = True 
 
+        
         self.datacollector = DataCollector( 
-        agent_reporters={"Steps": lambda a: a.steps_taken if isinstance(a, RandomAgent) else 0})
+            agent_reporters={
+                "Steps": lambda a: a.steps_taken if isinstance(a, RandomAgent) else 0,
+                "Battery": lambda a: a.energy if isinstance(a, RandomAgent) else None
+            }
+        )
 
+        # place obstacles on the grid based on obstacle density value "O" (if random > density, place obstacle)
 
-        # random obstacle positions 
-        obs_gen = lambda w, h: (self.random.randrange(w), self.random.randrange(h))
-
-        # place obstacles on the grid
-        for i in range(O):
-            obs = ObstacleAgent(i+1000, self)
-            self.schedule.add(obs)
-            pos = obs_gen(self.grid.width, self.grid.height)
-            while (not self.grid.is_cell_empty(pos)):
-                pos = obs_gen(self.grid.width, self.grid.height)
-            self.grid.place_agent(obs, pos)
-
+        for contents, (x, y) in self.grid.coord_iter():
+            if self.random.random() < O:
+                obs = ObstacleAgent(1000, self)
+                self.grid.place_agent(obs, (x, y))
+                self.schedule.add(obs)            
 
         # Function to generate random positions
         pos_gen = lambda w, h: (self.random.randrange(w), self.random.randrange(h))
@@ -47,7 +46,8 @@ class RandomModel(Model):
         # Add the agent to a random empty grid cell
         for i in range(self.num_agents):
 
-            a = RandomAgent(i+1000, self) 
+            # agent
+            a = RandomAgent(i+1000, self, 100) 
             self.schedule.add(a)
 
             b = ChargingStation(i+1000, self)
@@ -61,20 +61,13 @@ class RandomModel(Model):
             self.grid.place_agent(a, pos)
             self.grid.place_agent(b, pos)
 
-        # Generate random trash positions
-        trash_gen = lambda w, h: (self.random.randrange(w), self.random.randrange(h))
-
-        for i in range(self.num_trash):
-            t = TrashAgent(i+1000, self)
-            self.schedule.add(t)
-
-            pos = trash_gen(self.grid.width, self.grid.height)
-
-            while (not self.grid.is_cell_empty(pos)):
-                pos = pos_gen(self.grid.width, self.grid.height)
-
-            self.grid.place_agent(t, pos)
-
+        # Generate random trash positions based on trash density value "M" (if random > density and not and obstacle or randomagent, place trash)
+        for contents, (x, y) in self.grid.coord_iter():
+            if self.random.random() < M and self.grid.is_cell_empty((x,y)):
+                trash = TrashAgent(1000, self)
+                self.grid.place_agent(trash, (x, y))
+                self.schedule.add(trash)
+        
         self.datacollector.collect(self)
 
     def step(self):
